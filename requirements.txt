@@ -1,5 +1,2 @@
 streamlit
-openai
-textblob
-vaderSentiment
-python-dotenv
+google-generativeai
