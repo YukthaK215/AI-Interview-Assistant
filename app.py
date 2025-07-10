@@ -1,27 +1,28 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Streamlit UI
-st.title("🧠 SmartIRAI - GPT-Powered Interview Simulator")
+st.set_page_config(page_title="AI Interview Assistant")
 
-question = st.text_input("Enter an interview question")
-answer = st.text_area("Your answer to the question")
+st.title("🧠 SmartIRAI - Gemini-Powered Interview Simulator")
+st.subheader("Simulate interview answers and get instant AI feedback")
 
-# Load Gemini API Key
+question = st.text_input("Enter the interview question")
+answer = st.text_area("Enter your answer")
+
 if "GEMINI_API_KEY" not in st.secrets:
-    st.error("Missing Gemini API key. Please add it in Streamlit secrets.")
+    st.error("Gemini API Key not found in secrets.")
 else:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-    if question and answer:
-        if st.button("Analyze"):
-            try:
-                model = genai.GenerativeModel(model_name="models/gemini-pro")
-                prompt = f"""You are a technical interviewer. A candidate answered this question: "{question}" 
-                with: "{answer}". Please evaluate it with strengths, weaknesses, and suggested improvements."""
-
-                response = model.generate_content(prompt)
-                st.success("AI Feedback:")
-                st.write(response.text)
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+    if st.button("Analyze") and question and answer:
+        try:
+            model = genai.GenerativeModel(model_name="models/gemini-pro")
+            prompt = f"""
+            You are an expert interviewer. The question is: "{question}".
+            The candidate answered: "{answer}". Provide a detailed feedback highlighting strengths, weaknesses, and suggestions for improvement.
+            """
+            response = model.generate_content(prompt)
+            st.success("AI Feedback:")
+            st.write(response.text)
+        except Exception as e:
+            st.error(f"Error: {e}")
